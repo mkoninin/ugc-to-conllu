@@ -24,18 +24,36 @@ text = 'Открытки “С днем 8 Марта” в СССР начали
 
 # %%
 
-doc = Doc(text)
 
-doc.segment(segmenter)
-print(doc.sents)
+def format_feats(feats):
+    if not feats:
+        return '_'
+
+    return '|'.join(
+        '%s=%s' % (_, feats[_])
+        for _ in sorted(feats)
+    )
+
 # %%
-doc.tag_morph(morph_tagger)
-doc.sents[0].morph.print()
+def conllu(text):
+    doc = Doc(text)
+    doc.segment(segmenter)
+    doc.tag_morph(morph_tagger)
+    doc.parse_syntax(syntax_parser)
+    for token in doc.tokens:
+        token.lemmatize(morph_vocab)
+
+    for sent_id, sent in enumerate(doc.sents, 1):
+        yield(f'# text = {sent.text}')
+        for token in sent.tokens:
+            feats = format_feats(token.feats)
+            id = token.id.removeprefix(f'{sent_id}_')
+            head_id = token.head_id.removeprefix(f'{sent_id}_')
+            yield(f'{id}\t{token.text}\t{token.lemma}\t{token.pos}\t_\t{feats}\t{head_id}\t{token.rel}\t')
+            # f'\tTag={token.tag}'  # misc = ner tag
+        yield('\n')
 # %%
-doc.parse_syntax(syntax_parser)
-print(doc.tokens[:5])
-doc.sents[0].syntax.print()
-# %%
-doc.tokens[0].lemmatize(morph_vocab)
-doc.tokens[0]
+c = '\n'.join([x for x in conllu(text)])
+open('1.conllu', 'w').write(c)
+# print(c)
 # %%
