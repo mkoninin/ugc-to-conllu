@@ -51,9 +51,9 @@ def conllu(text):
             head_id = token.head_id.removeprefix(f'{sent_id}_')
             yield(f'{id}\t{token.text}\t{token.lemma}\t{token.pos}\t_\t{feats}\t{head_id}\t{token.rel}\t')
             # f'\tTag={token.tag}'  # misc = ner tag
-        yield('\n')
+        yield('')
 # %%
 c = '\n'.join([x for x in conllu(text)])
 open('1.conllu', 'w').write(c)
-# print(c)
+print(c)
 # %%
