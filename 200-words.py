@@ -2,6 +2,7 @@
 
 # тут я хочу выделить общие слова в чатах, чтобы потом их исключать
 
+import conllu
 import matplotlib.pyplot as plt
 import pandas as pd
 import json, itertools, os
@@ -25,4 +26,12 @@ for path in paths:
 
 
 # %%
-tg.df[list(tg.ids)[0]].text
+ids = list(tg.ids)
+for id in ids:
+    try:
+        text = tg.df[id].text
+        open('tg.conllu', 'a').write(conllu.conllu(text))
+
+# %%
+tg.df[list(tg.ids)[9]]
+# %%
