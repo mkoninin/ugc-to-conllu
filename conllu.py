@@ -20,7 +20,7 @@ morph_vocab = MorphVocab()
 morph_tagger = NewsMorphTagger(emb)
 syntax_parser = NewsSyntaxParser(emb)
 
-text = 'Открытки “С днем 8 Марта” в СССР начали выпускать лишь с 1952 года.\n\nКаждый год выпускалось от 10 до 80 видов открыток. Над их созданием трудились лучшие художники, выпускались специальные тематические серии и целые коллекционные альбомы.'
+# text = 'Открытки “С днем 8 Марта” в СССР начали выпускать лишь с 1952 года.\n\nКаждый год выпускалось от 10 до 80 видов открыток. Над их созданием трудились лучшие художники, выпускались специальные тематические серии и целые коллекционные альбомы.'
 
 # %%
 
@@ -35,7 +35,7 @@ def format_feats(feats):
     )
 
 # %%
-def conllu(text):
+def _conllu(text):
     doc = Doc(text)
     doc.segment(segmenter)
     doc.tag_morph(morph_tagger)
@@ -53,7 +53,8 @@ def conllu(text):
             # f'\tTag={token.tag}'  # misc = ner tag
         yield('')
 # %%
-c = '\n'.join([x for x in conllu(text)])
-open('1.conllu', 'w').write(c)
-print(c)
+        
+def conllu(text):
+    return '\n'.join([x for x in _conllu(text)])
+
 # %%
